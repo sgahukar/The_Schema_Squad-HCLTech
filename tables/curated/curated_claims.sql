@@ -1,0 +1,11 @@
+CREATE OR REPLACE TABLE CURATED_CLAIMS AS
+SELECT *
+FROM (
+    SELECT *,
+           ROW_NUMBER() OVER (
+               PARTITION BY claim_id
+               ORDER BY fnol_datetime DESC NULLS LAST
+           ) AS rn
+    FROM VALIDATEDSCHEMA.VALIDATED_CLAIMS_RI
+)
+WHERE rn = 1;
